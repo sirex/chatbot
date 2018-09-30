@@ -1,0 +1,111 @@
+memory:
+
+  paros_metas:
+    type: "string"
+    choice:
+      - "rytas"
+      - "diena"
+      - "vakaras"
+      - "naktis"
+    default: "Laba {part_of_the_day()}."
+
+  birth_year:
+    question: "Kuriais metais gimėte?"
+    type: "integer"
+    default: "{now().year}"
+    validate:
+      atleast: "{now().year - 100}"
+      atmost: "{now().year}"
+
+  pažeidimo_rūšis:
+    question: "Apie kokį pažeidimą norite pasiteirauti?"
+    type: "string"
+    choice:
+      - "greičio_viršijimas"
+
+  automobilio_numeris:
+    question: "Koks yra jūsų automobilio numeris?"
+    type: "string"
+    validate:
+      pattern:
+        - "[a-zA-Z]{3}[ -]?[0-9]{3}"
+
+conversation:
+
+  greeting:
+    listen:
+      message:
+        - "Labas."
+        - "Sveikas."
+        - "Sveiki."
+      pattern:
+        - "Laba {paros_metas}."
+    answer:
+      message:
+        - "Labas."
+
+  age:
+    listen:
+      message:
+        - "Kiek man metų?"
+        - "Kiek man yra metų?"
+        - "Koks mano amžius?"
+    answer:
+      unknown:
+        - "birth_year"
+      message:
+        - "Jums yra {age(birth_year)} metų."
+
+  pažeidimas:
+    listen:
+      message:
+        - "Ar aš padariau pažeidimą?"
+    answer:
+      unknown:
+        - "pažeidimo_rūšis"
+        - "automobilio_numeris"
+        - "pažeidimo_protokolas"
+
+  greičio_viršijimas:
+    listen:
+      message:
+        - "Greičio viršyjimas."
+        - "Aš viršyjau greitį."
+        - "Ką daryti, jei aš viršyjau greitį?"
+        - "Ką daryti, jei viršijau greitį?"
+      provide:
+        pažeidimo_rūšis: "greičio_viršijimas"
+    answer:
+      goto: "pažeidimas"
+
+  automobilio_numeris:
+    listen:
+      message:
+        - "Mano automobilio numeris: {automobilio_numeris}."
+        - "{automobilio_numeris}"
+    answer:
+      message:
+        - "Jūsų automobilio numeris yra {automobilio_numeris}?"
+      confirm: true
+
+  pažeidimo_protokolas:
+
+
+
+# human: Ar aš padariau pažeidimą?
+#   bot: Apie kokį pažeidimą norite pasiteirauti? [greičio viršyjimas]
+# human: greičio viršyjimas
+#   bot: Įveskite savo automobilio valstybinį numerį.
+# human: AAA 000
+#   bot: Sistema užfiksavo vieną galiojantį pažeidimą Vilniaus mieste,
+#        Kalvarijų gatvėje. [taip, ne]
+# human: taip
+#   bot: Ar generuoti pažeidimo protokolą? [taip, ne]
+# human: taip
+#   bot: Ar dėl padaryto pažeidimo gailitės? [taip, ne]
+# human: taip
+#   bot: Ar formuoti nutarimą? [taip, ne]
+# human: taip
+#   bot: Ar sutinkate sumokėti 20€ dabar? [taip, ne]
+# human: taip
+#   bot: Ačiū, pinigai nuskaityti iš jūsų sąskaitos. Geros dienos.
